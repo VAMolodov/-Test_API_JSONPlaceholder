@@ -18,6 +18,7 @@ source venv/bin/activate  # Для macOS/Linux
 venv\Scripts\activate     # Для Windows
 
 pip install -r requirements.txt
+
 ========================================================
 Запуск тестов:
 Стандартный запуск (все тесты в проекте):
@@ -31,6 +32,7 @@ pytest --alluredir=allure-results
 
 Просмотр отчета Allure (Убедитесь, что Allure установлен в вашей системе)
 allure serve allure-results
+
 =======================================================
 
 📂 Структура проекта
