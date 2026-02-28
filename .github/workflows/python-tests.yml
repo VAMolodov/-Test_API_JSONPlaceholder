@@ -1,0 +1,37 @@
+# Название пайплайна, которое будет отображаться во вкладке Actions
+name: Run Pytest API_JSONPlaceholder
+
+# 1. Когда запускать пайплайн?
+on:
+  push:
+    branches: [ "main", "develop" ] # Запуск при пуше в ветки main или develop
+  pull_request:
+    branches: [ "main" ]           # Запуск при создании PR в ветку main
+
+# 2. Что именно делать?
+jobs:
+  test:
+    # На какой операционной системе запускать (стандарт — последняя Ubuntu)
+    runs-on: ubuntu-latest
+
+    steps:
+      # Шаг 1: "Выкачиваем" ваш код из репозитория на виртуальную машину
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Шаг 2: Устанавливаем Python на виртуальную машину
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13' # Укажите вашу версию Python
+
+      # Шаг 3: Устанавливаем зависимости из вашего файла requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # Шаг 4: Запускаем тесты
+      - name: Run tests with pytest
+        run: |
+          pytest

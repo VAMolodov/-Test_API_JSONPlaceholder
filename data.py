@@ -1,5 +1,5 @@
 
-base_url ='https://jsonplaceholder.typicode.com/posts' # базовый URL API JSONPlaceholder
+main_url ='https://jsonplaceholder.typicode.com/posts' # базовый URL API JSONPlaceholder
 
 
 post_data = {"title": "Test title","body": "Test body","userId": 1} # данные поста
