@@ -11,7 +11,12 @@ pipeline {
                 checkout scm
             }
         }
-
+        stage('Prepare') {
+            steps {
+                // Создаем папку заранее силами Jenkins
+                sh 'mkdir -p allure-results'
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 // Собираем образ
@@ -21,12 +26,8 @@ pipeline {
 
         stage('Run API Tests') {
             steps {
-                // Меняем владельца папки allure-results на текущего пользователя Jenkins
-                // Это позволит плагину Allure прочитать файлы
-                sh 'sudo chown -R 1000:1000 ${WORKSPACE}/allure-results || true'
-                // Запускаем тесты и сохраняем результаты в папку проекта в Jenkins
-                // --clean-alluredir очистит результаты прошлого запуска внутри контейнера
-                sh 'docker run --rm -v ${WORKSPACE}/allure-results:/app/allure-results my-api-tests pytest --alluredir=allure-results --clean-alluredir'
+                // запускаем тесты
+                sh 'docker run --rm -v $(pwd)/allure-results:/app/allure-results my-api-tests pytest --alluredir=allure-results --clean-alluredir'
             }
         }
     }
