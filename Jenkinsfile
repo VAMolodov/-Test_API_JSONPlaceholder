@@ -31,6 +31,7 @@ pipeline {
         always {
 
             // Генерируем отчет
+            sh 'docker run --rm -v $(pwd):/work busybox chown -R 1000:1000 /work/allure-results || true'
             allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
         }
     }
