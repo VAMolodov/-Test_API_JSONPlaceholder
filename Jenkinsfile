@@ -21,6 +21,8 @@ pipeline {
 
         stage('Run API Tests') {
             steps {
+                // Даем Jenkins права на чтение результатов, которые создал Docker-root
+                sh 'docker exec -u 0 jenkins-server chown -R 1000:1000 ${WORKSPACE}/allure-results || true'
                 // Запускаем тесты и сохраняем результаты в папку проекта в Jenkins
                 // --clean-alluredir очистит результаты прошлого запуска внутри контейнера
                 sh 'docker run --rm -v ${WORKSPACE}/allure-results:/app/allure-results my-api-tests pytest --alluredir=allure-results --clean-alluredir'
