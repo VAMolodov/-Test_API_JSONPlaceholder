@@ -11,7 +11,13 @@ pipeline {
                 checkout scm
             }
         }
-        
+        stage('Clear old results') {
+            steps {
+                // Полностью чистим папку перед новым запуском
+                sh 'rm -rf allure-results && mkdir allure-results'
+                sh 'chmod 777 allure-results' 
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 // Собираем образ
