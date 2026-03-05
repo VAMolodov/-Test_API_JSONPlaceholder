@@ -21,7 +21,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 // Собираем образ
-                sh 'docker build -t my-api-tests .'
+                sh 'docker build --no-cache -t my-api-tests .'
             }
         }
 
