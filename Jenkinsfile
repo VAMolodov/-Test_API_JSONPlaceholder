@@ -28,7 +28,7 @@ pipeline {
         stage('Run API Tests') {
             steps {
                 // запускаем тесты
-                sh 'docker run --rm -v $(pwd)/allure-results:/app/allure-results'
+                sh 'docker run --rm -v $(pwd)/allure-results:/app/allure-results my-api-tests pytest --alluredir=allure-results --clean-alluredir'
             }
         }
     }
