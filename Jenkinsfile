@@ -1,5 +1,3 @@
-
-
 pipeline {
     //  На чем запускать (any - на любом свободном сервере/агенте)
     agent any
@@ -11,13 +9,7 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Clear old results') {
-            steps {
-                // Полностью чистим папку перед новым запуском
-                sh 'rm -rf allure-results && mkdir allure-results'
-                sh 'chmod 777 allure-results' 
-            }
-        }
+        
         stage('Build Docker Image') {
             steps {
                 // Собираем образ
@@ -27,17 +19,24 @@ pipeline {
 
         stage('Run API Tests') {
             steps {
-                // запускаем тесты
-                sh 'docker run --rm -v $(pwd)/allure-results:/app/allure-results my-api-tests pytest --alluredir=/app/allure-results --clean-alluredir'
+                // 1. Запускаем контейнер БЕЗ маппинга -v, но даем ему имя 'test-container'
+                // Используем || true, чтобы билд не падал до того, как мы заберем отчеты
+                sh 'docker run --name test-container my-api-tests pytest --alluredir=allure-results || true'
+                
+                // 2. Копируем папку с результатами ИЗ контейнера в Jenkins Workspace
+                sh 'docker cp test-container:/app/allure-results ./'
+                
+                // 3. Удаляем временный контейнер
+                sh 'docker rm test-container'
             }
         }
+
     }
 
     post {
         always {
 
             // Генерируем отчет
-            sh 'docker run --rm -v $(pwd):/work busybox chown -R 1000:1000 /work/allure-results || true'
             allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
         }
     }
