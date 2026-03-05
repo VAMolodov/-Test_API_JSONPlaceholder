@@ -19,10 +19,10 @@ pipeline {
 
         stage('Run API Tests') {
             steps {
-                // 1. Принудительно удаляем старый контейнер, если он остался от прошлого раза
+                // 1. Удаляем старый контейнер, если он остался от прошлого раза
                 sh 'docker rm -f test-container || true'
                 
-                // 2. Запускаем тесты (без маппинга -v)
+                // 2. Запускаем тесты 
                 sh 'docker run --name test-container my-api-tests pytest --alluredir=allure-results || true'
                 
                 // 3. Копируем папку с результатами
